@@ -3,12 +3,12 @@ import uuid
 
 class Student(models.Model):
 
-    Gender_Choices = [
+    GENDER_CHOICES = [
         ('M', 'Male'),
         ('F', 'Female')
     ]
 
-    Academic_Level_Choices = [
+    ACADEMIC_LEVEL_CHOICES = [
         ('P.1', 'Primary 1'),
         ('P.2', 'Primary 2'),
         ('P.3', 'Primary 3'),
@@ -22,8 +22,8 @@ class Student(models.Model):
         ('S.5', 'Secondary 5')
     ]
 
-    Enrollment_Status_Choices = [
-        ('Active', 'Active'),
+    ENROLLMENT_STATUS_CHOICES = [
+        ('active', 'Active'),
         ('dismissed', 'Dismissed'),
         ('transferred', 'Transferred'),
         ('graduated', 'Graduated')
@@ -33,9 +33,9 @@ class Student(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     birth_date = models.DateField("Birth Date")
-    gender = models.CharField(max_length=10, choices=Gender_Choices)
-    current_academic_level = models.CharField('Current Academic Level', max_length=100, choices=Academic_Level_Choices)
-    enrolment_status = models.CharField('Enrolment Status', max_length=100, choices=Enrollment_Status_Choices, default='Active')
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+    academic_level = models.CharField('Current Academic Level', max_length=100, choices=ACADEMIC_LEVEL_CHOICES)
+    enrollment_status = models.CharField('Enrollment Status', max_length=100, choices=ENROLLMENT_STATUS_CHOICES, default='Active')
     photo = models.ImageField(upload_to='students/photos', null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -43,3 +43,9 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+    def get_age(self):
+        from datetime import date
+        today = date.today()
+        age = today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+        return age
